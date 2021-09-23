@@ -29,7 +29,7 @@ export OMP_PROC_BIND=spread
 # make use of the OMP_SCHEDULE environment variable to set the thread scheduling 
 # algorithm. HW3 asks you to compare static and dynamic scheduling, so select one
 # of these two to select a specific thread scheduling algorithm:
-# export OMP_SCHEDULE=static
+export OMP_SCHEDULE=static
 # export OMP_SCHEDULE=dynamic
 
 for t in 1 2 4 8 16 32 64
