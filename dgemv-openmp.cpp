@@ -14,11 +14,12 @@ const char* dgemv_desc = "OpenMP dgemv.";
 
 void my_dgemv(int n, double* A, double* x, double* y) {
 
+#if defined(EXPLICIT)
+	
 	#pragma omp parallel
 	{
 		int nthreads = omp_get_num_threads();
 		int thread_id = omp_get_thread_num();
-		// printf("Hello world: thread %d of %d checking in. \n", thread_id, nthreads);
 		int total = n/nthreads;
 		int end = total*(thread_id + 1);
 		for (int i = total*thread_id; i < end; ++i)
@@ -29,10 +30,47 @@ void my_dgemv(int n, double* A, double* x, double* y) {
 			}
 		}
 	}
-
-	// insert your dgemv code here. you may need to create additional parallel regions,
-	// and you may want to comment out the above parallel code block that prints out
-	// nthreads and thread_id so as to not taint your timings
-
+	
+#elif defined(NESTED)
+	
+	#pragma omp parallel
+	{
+		int nthreads = omp_get_num_threads();
+		int thread_id = omp_get_thread_num();
+		int total = n/nthreads;
+		int end = total*(thread_id + 1);
+		for (int i = total*thread_id; i < end; ++i)
+		{
+			#pragma omp parallel for
+			for (int j = 0; j < n; ++j)
+			{
+				y[i] += A[i*n + j]*x[j];
+			}
+		}
+	}
+	
+#elif defined(COLLAPSE)
+	
+	#pragma omp parallel for collapse(2)
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			y[i] += A[i*n + j]*x[j];
+		}
+	}
+	
+#else
+	
+	#pragma omp parallel for
+	for (int i = 0; i < n; ++i)
+	{
+		for (int j = 0; j < n; ++j)
+		{
+			y[i] += A[i*n + j]*x[j];
+		}
+	}
+	
+#endif
 }
 
