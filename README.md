@@ -53,31 +53,12 @@ then clean your build directory (rm -rf * inside build) and run cmake again.
 Note you will need to "locate cblas.h" on your machine and replace the path to cblas.h
 in the CXXFLAGS line above with the path on your specific machine.
 
-# Adding your code
-
-For timing:
-
-You will need to modify the benchmark.cpp code to add timing instrumentation, to 
-report FLOPs executed, and so forth.
-
-
-For vector-matrix multiplication:
-
-There are stub routines inside dgemv-basic.cpp and dgemv-openmp.cpp where you can
-add your code for doing basic and OpenMP-parallel vector-matrix multiply, respectively.
-
-For the OpenMP parallel code, note that you specify concurrency at runtime using
-the OMP_NUM_THREADS environment variable. It is not something you set at compile time.
-
-
 # Running the codes
 
-Some sample job scripts are provided as part of the harness. In principle, you should be able to use
-them to launch batch jobs that run your code. You will probably need to make some adjustments
-to these scripts for your particular testing workflow.
+Running cmake in the build directory as directed above creates three batch files in the build directory: job-basic, job-blas, and job-openmp. These can be run as follows:
 
-These sample job scripts have some reference values and tips for managing OpenMP-related
-environment variables that are relevant to HW3 and Cori@NERSC.
+% sbatch job-openmp
 
+for instance. The job will run and write its timing output to job-openmp.oXXXXXXXX, where XXXXXXXX is the job number that was assigned by the sbatch.
 
 #eof
